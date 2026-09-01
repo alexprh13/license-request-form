@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New License</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #dfe9ea;
+      color: #222;
+    }
+
+    .page-overlay {
+      min-height: 100vh;
+      padding: 40px 20px;
+      background: rgba(218, 232, 234, 0.88);
+    }
+
+    .license-modal {
+      position: relative;
+      width: 720px;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 42px 55px 32px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 28px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+
+    .form-row label {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .required::after {
+      content: "*";
+      margin-left: 2px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 32px;
+      border: 0;
+      border-radius: 4px;
+      padding: 0 12px;
+      background: #eef2f2;
+      color: #555;
+      outline: none;
+      font-size: 12px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid #9cc8cb;
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    .user-counts {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin: 14px 0 14px 142px;
+    }
+
+    .count-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count-field label {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .count-field input {
+      width: 68px;
+      padding: 0 8px;
+    }
+
+    .section {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 12px;
+      margin-top: 17px;
+    }
+
+    .section-title {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+      padding-top: 2px;
+      white-space: nowrap;
+    }
+
+    .section-title::before {
+      content: "▲";
+      color: #72b9bd;
+      font-size: 7px;
+      margin-right: 5px;
+      vertical-align: 1px;
+    }
+
+    .tree {
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .tree-item {
+      display: flex;
+      align-items: flex-start;
+      min-height: 22px;
+    }
+
+    .tree-item input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin: 2px 7px 0 0;
+      padding: 0;
+      accent-color: #6daeb3;
+      flex: 0 0 auto;
+    }
+
+    .tree-children {
+      position: relative;
+      margin-left: 8px;
+      padding-left: 20px;
+    }
+
+    .tree-children::before {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 0;
+      bottom: 8px;
+      border-left: 1px solid #d6e0e1;
+    }
+
+    .tree-children .tree-item {
+      position: relative;
+    }
+
+    .tree-children .tree-item::before {
+      content: "";
+      position: absolute;
+      left: -15px;
+      top: 10px;
+      width: 11px;
+      border-top: 1px solid #d6e0e1;
+    }
+
+    .caret {
+      color: #72b9bd;
+      font-size: 8px;
+      margin-left: 4px;
+    }
+
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 90px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .bottom-row label {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .actions {
+      text-align: center;
+      margin-top: 22px;
+    }
+
+    .add-button {
+      min-width: 135px;
+      height: 32px;
+      border: 0;
+      border-radius: 5px;
+      background: #b8ced1;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background: #9ebfc2;
+    }
+
+    @media (max-width: 760px) {
+      .license-modal {
+        padding: 40px 20px 28px;
+      }
+
+      .form-row,
+      .section {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row label,
+      .section-title {
+        text-align: left;
+      }
+
+      .user-counts {
+        margin-left: 0;
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-row {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-row label {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-overlay">
+
+    <div class="license-modal">
+
+      <h1>Add new license</h1>
+
+      <!-- COMPANY -->
+      <div class="form-row">
+        <label class="required" for="company">Company</label>
+
+        <input
+          id="company"
+          name="company"
+          type="text"
+          placeholder="Enter company name"
+          required
+        />
+      </div>
+
+      <!-- USER COUNTS -->
+      <div class="user-counts">
+
+        <div class="count-field">
+          <label class="required" for="administrators">
+            Administrators
+          </label>
+
+          <input
+            id="administrators"
+            name="administrators"
+            type="number"
+            value="1"
+            min="0"
+          />
+        </div>
+
+        <div class="count-field">
+          <label class="required" for="teachers">
+            Teachers
+          </label>
+
+          <input
+            id="teachers"
+            name="teachers"
+            type="number"
+            value="1"
+            min="0"
+          />
+        </div>
+
+        <div class="count-field">
+          <label class="required" for="students">
+            Students
+          </label>
+
+          <input
+            id="students"
+            name="students"
+            type="number"
+            value="0"
+            min="0"
+          />
+        </div>
+
+      </div>
+
+      <!-- USAGE -->
+      <div class="form-row">
+
+        <label class="required" for="usage">
+          Usage time per user<br />
+          (hrs)
+        </label>
+
+        <input
+          id="usage"
+          name="usage"
+          type="number"
+          min="0"
+          placeholder="Enter expected usage time per user within this license"
+        />
+
+      </div>
+
+      <!-- CONCURRENCY -->
+      <div class="form-row">
+
+        <label class="required" for="concurrency">
+          Concurrency
+        </label>
+
+        <input
+          id="concurrency"
+          name="concurrency"
+          type="number"
+          min="0"
+          placeholder="Enter maximal count of Organisms for simultaneous use within this license"
+        />
+
+      </div>
+
+      <!-- AVAILABLE MODULES -->
+      <div class="section">
+
+        <div class="section-title">
+          Available modules
+        </div>
+
+        <div class="tree">
+
+          <div class="tree-item">
+            <input type="checkbox" name="available_modules_all" />
+          </div>
+
+          <div class="tree-children">
+
+            <div class="tree-item">
+              <input type="checkbox" name="cardio" />
+              <span>Cardio <span class="caret">▲</span></span>
+            </div>
+
+            <div class="tree-children">
+
+              <label class="tree-item">
+                <input type="checkbox" name="cardio_main" />
+                <span>Main</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="electrophysiology" />
+                <span>Electrophysiology</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="arrhythmia" />
+                <span>Arrhythmia</span>
+              </label>
+
+            </div>
+
+            <div class="tree-item">
+              <input type="checkbox" name="pulmo" />
+              <span>Pulmo <span class="caret">▲</span></span>
+            </div>
+
+            <div class="tree-children">
+
+              <label class="tree-item">
+                <input type="checkbox" name="pulmo_main" />
+                <span>Main</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="pft_test" />
+                <span>PFT Test</span>
+              </label>
+
+            </div>
+
+            <label class="tree-item">
+              <input type="checkbox" name="hemorrhage" />
+              <span>Hemorrhage</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="renal" />
+              <span>Renal</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns" />
+              <span>Burns</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="gastric" />
+              <span>Gastric</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="sepsis" />
+              <span>Sepsis</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="trauma" />
+              <span>Trauma</span>
+            </label>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENARIOS -->
+      <div class="section">
+
+        <div class="section-title">
+          Scenarios
+        </div>
+
+        <div class="tree">
+
+          <label class="tree-item">
+            <input type="checkbox" name="scenario_generator" />
+            <span>
+              Scenario Generator
+              (include Default Single Pathology Template)
+            </span>
+          </label>
+
+          <div class="tree-item">
+            <input type="checkbox" name="additional_sg_templates" />
+            <span>
+              Additional SG Templates
+              <span class="caret">▲</span>
+            </span>
+          </div>
+
+          <div class="tree-children">
+
+            <label class="tree-item">
+              <input type="checkbox" name="abcde_assessment" />
+              <span>ABCDE Assessment Diagnosis Treatment</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_1st_module" />
+              <span>Burns 1st Module</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_2nd_module" />
+              <span>Burns 2nd Module</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_intro" />
+              <span>Burns Module 1 - Intro</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_complications" />
+              <span>Burns Module 10 - Complications</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_special_consideration" />
+              <span>Burns Module 11 - Special Consideration</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_depth" />
+              <span>Burns Module 2 - Depth</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_tbsa" />
+              <span>Burns Module 3 - TBSA</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_rule_of_9s" />
+              <span>Burns Module 4 - Rule of 9s</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_lund_browder" />
+              <span>Burns Module 5 - Lund-Browder</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_monitoring" />
+              <span>
+                Burns Module 7 - Physiologic Burn Monitoring and Fluid Titration
+              </span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_fluid_management" />
+              <span>
+                Burns Module 8 - TBSA and Fluid Management
+              </span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="burns_fluid_formulas" />
+              <span>Burns Module 9 - Fluid Formulas</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="hemorrhage_learning" />
+              <span>Hemorrhage Learning Mode</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="hemothorax_learning" />
+              <span>Hemothorax Learning Mode</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="mild_asthma_exacerbation" />
+              <span>Mild Asthma Exacerbation</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="mild_asthma_scenario" />
+              <span>Mild Asthma Scenario</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="rca_learning" />
+              <span>RCA Learning Mode</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="rca_learning_new_ui" />
+              <span>RCA Learning Mode (New UI)</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="severe_asthma" />
+              <span>Severe Asthma Exacerbation</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="srhs" />
+              <span>SRHS</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="suspected_acs_stemi" />
+              <span>Suspected ACS - STEMI</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="suspected_acs_stemi_new_ui" />
+              <span>Suspected ACS - STEMI (New UI)</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="trauma_c_abcd" />
+              <span>Trauma C-ABCD</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="trauma_case_1" />
+              <span>Trauma Case 1 - Femoral Hemorrhage</span>
+            </label>
+
+            <label class="tree-item">
+              <input type="checkbox" name="trauma_case_2" />
+              <span>Trauma Case 2 - Pneumothorax</span>
+            </label>
+
+          </div>
+
+          <label class="tree-item">
+            <input type="checkbox" name="laura" />
+            <span>Laura</span>
+          </label>
+
+          <div class="tree-item">
+            <input type="checkbox" name="default_scenarios" />
+            <span>
+              Default Scenarios
+              <span class="caret">▲</span>
+            </span>
+          </div>
+
+          <div class="tree-children">
+
+            <div class="tree-item">
+              <input type="checkbox" name="general_scenarios" />
+              <span>
+                General
+                <span class="caret">▲</span>
+              </span>
+            </div>
+
+            <div class="tree-children">
+
+              <label class="tree-item">
+                <input type="checkbox" name="hemothorax_7836" />
+                <span>Hemothorax (7836)</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="inferior_mi_7840" />
+                <span>Inferior Myocardial Infarction (7840)</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="suspected_acs_7847" />
+                <span>Suspected ACS (7847)</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="muscular_hypertension_7853" />
+                <span>Muscular Hypertension (7853)</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="inferior_mi_6572" />
+                <span>Inferior Myocardial Infarction (6572)</span>
+              </label>
+
+            </div>
+
+            <div class="tree-item">
+              <input type="checkbox" name="nursing" />
+              <span>
+                Nursing
+                <span class="caret">▲</span>
+              </span>
+            </div>
+
+            <div class="tree-children">
+
+              <label class="tree-item">
+                <input type="checkbox" name="severe_asthma_7859" />
+                <span>Severe Asthma Exacerbation (7859)</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="mild_asthma_7867" />
+                <span>Mild Asthma Exacerbation (7867)</span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="trauma_3_7873" />
+                <span>Trauma 3 (7873)</span>
+              </label>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- LEARNING MODULE -->
+      <div class="section">
+
+        <div class="section-title">
+          Learning module
+        </div>
+
+        <div class="tree">
+
+          <div class="tree-item">
+            <input type="checkbox" name="learning_cases" />
+            <span>
+              Learning Cases
+              <span class="caret">▲</span>
+            </span>
+          </div>
+
+          <div class="tree-children">
+
+            <div class="tree-item">
+              <input type="checkbox" name="learning_general" />
+              <span>
+                General
+                <span class="caret">▲</span>
+              </span>
+            </div>
+
+            <div class="tree-children">
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_1" />
+                <span>
+                  Inferior Myocardial Infarction (LearningCase1)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_2" />
+                <span>
+                  Hemorrhagic Shock (LearningCase2)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_3" />
+                <span>
+                  Hemothorax (LearningCase3)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_4" />
+                <span>
+                  Introduction to Electrocardiograms (ECG) (LearningCase4)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_5" />
+                <span>
+                  Introduction to PFTs in Obstructive Disease (LearningCase5)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_6" />
+                <span>
+                  Pneumothorax (LearningCase6)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_7" />
+                <span>
+                  Ventricular Tachycardia (VT) (LearningCase7)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_8" />
+                <span>
+                  Body fluid compartments and IV fluids (LearningCase8)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_9" />
+                <span>
+                  Antiphospholipid MI (LearningCase9)
+                </span>
+              </label>
+
+              <label class="tree-item">
+                <input type="checkbox" name="learning_case_10" />
+                <span>
+                  ECG Interpretation of Anterolateral Myocardial Infarction
+                  (LearningCase10)
+                </span>
+              </label>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FEATURES -->
+      <div class="section">
+
+        <div class="section-title">
+          Features
+        </div>
+
+        <div class="tree">
+
+          <label class="tree-item">
+            <input type="checkbox" name="checkpoints" />
+            <span>Checkpoints</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="sharing" />
+            <span>Sharing</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="anonymization" />
+            <span>Anonymization</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="desktop" />
+            <span>Desktop</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="allow_language_change" />
+            <span>Allow Language Change</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="live_atlas" />
+            <span>Live Atlas</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="ui_1" />
+            <span>UI 1.0</span>
+          </label>
+
+          <label class="tree-item">
+            <input type="checkbox" name="ui_2" />
+            <span>UI 2.0</span>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- DATES -->
+      <div class="bottom-row">
+
+        <label class="required" for="start-date">
+          Start Date
+        </label>
+
+        <input
+          id="start-date"
+          name="start_date"
+          type="date"
+          required
+        />
+
+        <label class="required" for="finish-date">
+          Finish Date
+        </label>
+
+        <input
+          id="finish-date"
+          name="finish_date"
+          type="date"
+          required
+        />
+
+      </div>
+
+      <!-- ADD BUTTON -->
+      <div class="actions">
+        <button class="add-button" type="button">
+          Add
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
